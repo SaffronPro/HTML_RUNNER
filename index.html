@@ -1,1 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Runner Demo</title>
+    <style>
+        #runner-area {
+            padding: 20px;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            text-align: center;
+        }
+        /* Style the element when it enters full-screen mode */
+        #runner-area:fullscreen {
+            background-color: #ffffff;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
 
+    <div id="runner-area">
+        <h2>HTML Runner Content</h2>
+        <p>Click the button below to launch this container into full screen.</p>
+        <button onclick="toggleFullscreen()">Go Fullscreen</button>
+    </div>
+
+    <script>
+        function toggleFullscreen() {
+            let elem = document.getElementById("runner-area");
+
+            if (!document.fullscreenElement) {
+                // Open fullscreen across different browser engines
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) { /* Safari */
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { /* IE11 */
+                    elem.msRequestFullscreen();
+                }
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
