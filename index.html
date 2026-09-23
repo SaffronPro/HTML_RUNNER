@@ -3,54 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fullscreen Runner Demo</title>
+    <title>HTML Runner with Fullscreen</title>
     <style>
-        #runner-area {
-            padding: 20px;
-            background-color: #f0f0f0;
-            border: 2px dashed #ccc;
-            text-align: center;
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background: #1e1e1e;
+            color: #fff;
         }
-        /* Style the element when it enters full-screen mode */
-        #runner-area:fullscreen {
-            background-color: #ffffff;
-            padding: 40px;
+        #container {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            height: 100vh;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
+            background: #2d2d2d;
+            padding: 10px 20px;
+            border-bottom: 1px solid #444;
+        }
+        button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button:hover { background: #005999; }
+        #workspace {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 50px);
+        }
+        #editor-pane, #preview-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        textarea {
+            flex: 1;
+            background: #1e1e1e;
+            color: #dcdcdc;
+            border: none;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            border-right: 1px solid #444;
+        }
+        iframe {
+            flex: 1;
+            background: white;
+            border: none;
         }
     </style>
 </head>
 <body>
 
-    <div id="runner-area">
-        <h2>HTML Runner Content</h2>
-        <p>Click the button below to launch this container into full screen.</p>
-        <button onclick="toggleFullscreen()">Go Fullscreen</button>
+    <div id="container">
+        <header>
+            <span>HTML Runner</span>
+            <button onclick="toggleFullscreen()">Go Fullscreen</button>
+        </header>
+        
+        <div id="workspace">
+            <div id="editor-pane">
+                <textarea id="code-input" placeholder="Type your HTML here..." oninput="runCode()">&lt;h1&gt;Hello World&lt;/h1&gt;</textarea>
+            </div>
+            <div id="preview-pane">
+                <iframe id="preview-frame"></iframe>
+            </div>
+        </div>
     </div>
 
     <script>
-        function toggleFullscreen() {
-            let elem = document.getElementById("runner-area");
+        function runCode() {
+            const code = document.getElementById('code-input').value;
+            const iframe = document.getElementById('preview-frame');
+            iframe.srcdoc = code;
+        }
 
+        function toggleFullscreen() {
+            const elem = document.getElementById('container');
             if (!document.fullscreenElement) {
-                // Open fullscreen across different browser engines
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                } else if (elem.webkitRequestFullscreen) { /* Safari */
-                    elem.webkitRequestFullscreen();
-                } else if (elem.msRequestFullscreen) { /* IE11 */
-                    elem.msRequestFullscreen();
-                }
+                elem.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable fullscreen: ${err.message}`);
+                });
             } else {
-                // Exit fullscreen
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                document.exitFullscreen();
             }
         }
-    </script>
 
+        // Run initial code on load
+        runCode();
+    </script>
 </body>
 </html>
