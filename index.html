@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple HTML Runner with Fullscreen</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: #f4f4f4;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover { background: #0056b3; }
+        .main-container {
+            display: flex;
+            flex: 1;
+            gap: 10px;
+            min-height: 0;
+        }
+        textarea {
+            flex: 1;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+        .preview-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        /* Fullscreen styling adjustments */
+        .preview-wrapper:fullscreen {
+            padding: 0;
+            border: none;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>HTML Code Runner</h2>
+        <button id="fs-btn">Go Fullscreen</button>
+    </header>
+
+    <div class="main-container">
+        <textarea id="code-input" placeholder="Type your HTML code here..."><h1>Hello World</h1><p>This is a live preview.</p></textarea>
+        
+        <div class="preview-wrapper" id="preview-box">
+            <iframe id="preview-frame"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const codeInput = document.getElementById('code-input');
+        const previewFrame = document.getElementById('preview-frame');
+        const previewBox = document.getElementById('preview-box');
+        const fsBtn = document.getElementById('fs-btn');
+
+        // Update iframe content live as user types
+        function updatePreview() {
+            const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            doc.open();
+            doc.write(codeInput.value);
+            doc.close();
+        }
+
+        codeInput.addEventListener('input', updatePreview);
+        updatePreview(); // Initial load
+
+        // Fullscreen toggle logic
+        fsBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                if (previewBox.requestFullscreen) {
+                    previewBox.requestFullscreen();
+                } else if (previewBox.webkitRequestFullscreen) {
+                    previewBox.webkitRequestFullscreen();
+                } else if (previewBox.msRequestFullscreen) {
+                    previewBox.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        // Change button text based on fullscreen state
+        document.addEventListener('fullscreenchange', () => {
+            fsBtn.textContent = document.fullscreenElement ? 'Exit Fullscreen' : 'Go Fullscreen';
+        });
+    </script>
+</body>
+</html>
